@@ -53,14 +53,15 @@ const loadMessage = (data) => {
 };
 
 const isWatched = ref(null);
-const { data: iw, error: werr } = await supabase
-  .from("watched")
-  .select("*")
-  .eq("user_id", userData.id)
-  .eq("channel", props.channel);
+if (user.value) {
+  const { data: iw, error: werr } = await supabase
+    .from("watched")
+    .select("*")
+    .eq("user_id", userData.id)
+    .eq("channel", props.channel);
 
-if (iw.length) isWatched.value = true;
-
+  if (iw.length) isWatched.value = true;
+}
 const toggleWatched = async () => {
   let { data: res, error } = await supabase.rpc("toggle_watched", {
     cid: props.channel,
@@ -101,9 +102,7 @@ onUnmounted(() => {
         v-bind:key="m.id"
         :class="{ customer: m.customer, moderator: m.owner }"
       >
-        <div class="message">
-          {{ m.message }}
-        </div>
+        <div class="message" v-html="md.makeHtml(m.message)"></div>
       </div>
     </div>
     <div class="input" @keydown.enter.prevent="handleInput">

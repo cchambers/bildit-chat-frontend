@@ -37,6 +37,7 @@ const getData = async () => {
     userid = exists.id;
   }
 
+  console.log("X", channel, userid);
   // see if channel exists
   const { data: ch, error } = await supabase
     .from("channels")
