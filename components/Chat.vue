@@ -52,6 +52,27 @@ const loadMessage = (data) => {
   pastMessages.value.unshift(data);
 };
 
+const isWatched = ref(null);
+const { data: iw, error: werr } = await supabase
+  .from("watched")
+  .select("*")
+  .eq("user_id", userData.id)
+  .eq("channel", props.channel);
+
+if (iw.length) isWatched.value = true;
+
+const toggleWatched = async () => {
+  let { data: res, error } = await supabase.rpc("toggle_watched", {
+    cid: props.channel,
+    uid: userData.id,
+  });
+  if (error) {
+    console.log("err", error);
+    return;
+  }
+  isWatched.value = res;
+};
+
 onMounted(() => {
   emit("subscribe", `channel:${props.channel}`);
   on("user-sent", loadMessage);
@@ -68,6 +89,12 @@ onUnmounted(() => {
 
 <template>
   <div class="chat-component">
+    <div class="controls" v-if="user">
+      <button @click="toggleWatched">
+        <i class="material-icons accent-primary" v-if="isWatched">visibility</i>
+        <i class="material-icons highlight-secondary" v-else>visibility_off</i>
+      </button>
+    </div>
     <div class="output">
       <div
         v-for="m in pastMessages"
@@ -97,6 +124,20 @@ onUnmounted(() => {
   flex-direction: column;
   height: 100%;
   width: 100%;
+  .controls {
+    position: fixed;
+    top: 6rem;
+    right: use(ss);
+    button {
+      height: 5rem;
+      width: 5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      border-radius: 50%;
+    }
+  }
   .output {
     height: 100%;
     flex-shrink: 1;

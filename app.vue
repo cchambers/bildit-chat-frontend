@@ -1,6 +1,6 @@
 <script setup>
 import useSocket from "~/composables/useSocket";
-const { socket, on, emit } = useSocket("http://localhost:3003");
+const { socket, on, emit } = useSocket("http://64.23.129.221:3003"); //useSocket("http://localhost:3003");
 provide("socket", ref(socket));
 provide("on", ref(on));
 provide("emit", ref(emit));

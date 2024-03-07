@@ -55,7 +55,7 @@ export default defineNuxtConfig({
   },
   supabase: {
     redirectOptions: {
-      exclude: ["/", "/register", "/chat/*"],
+      exclude: ["/", "/register", "/chat/*", "/join/*/*"],
     },
   },
 });
