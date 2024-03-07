@@ -102,7 +102,10 @@ onUnmounted(() => {
         v-bind:key="m.id"
         :class="{ customer: m.customer, moderator: m.owner }"
       >
-        <div class="message" v-html="md.makeHtml(m.message)"></div>
+        <div class="message" v-if="m.type == 'embed'">
+          <ChatEmbed :data="m.message" />
+        </div>
+        <div class="message" v-else v-html="md.makeHtml(m.message)"></div>
       </div>
     </div>
     <div class="input" @keydown.enter.prevent="handleInput">
